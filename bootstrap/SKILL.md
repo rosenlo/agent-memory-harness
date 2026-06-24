@@ -129,10 +129,15 @@ Use the entry templates below. Seed each file with at least one concrete entry.
 ## N. <short title>
 
 **Symptom:** <what user/system observed>
+
 **Root cause:** <why it happened>
+
 **Fix:** <what was done, or "open">
+
 **How to verify:** <command or query>
+
 **Status:** fixed | workaround | open
+
 **Source:** <PR#/commit/session date>
 ```
 
@@ -141,9 +146,13 @@ Use the entry templates below. Seed each file with at least one concrete entry.
 ## N. <decision title>
 
 **Context:** <what problem demanded a decision>
+
 **Decision:** <what was chosen>
+
 **Alternatives considered:** <brief>
+
 **Consequences:** <what changes downstream>
+
 **Source:** <PR#/commit/session date>
 ```
 

@@ -47,10 +47,15 @@ Each entry is a section in the relevant `memory/*.md` file. Two shapes:
 ## N. <short title>
 
 **Symptom:** <what user/system observed>
+
 **Root cause:** <why it happened>
+
 **Fix:** <what was done, or "open">
+
 **How to verify:** <command or query>
+
 **Status:** fixed | workaround | open
+
 **Source:** <PR#/commit/session date>
 ```
 
@@ -60,9 +65,13 @@ Each entry is a section in the relevant `memory/*.md` file. Two shapes:
 ## N. <decision title>
 
 **Context:** <what problem demanded a decision>
+
 **Decision:** <what was chosen>
+
 **Alternatives considered:** <brief>
+
 **Consequences:** <what changes downstream>
+
 **Source:** <PR#/commit/session date>
 ```
 
