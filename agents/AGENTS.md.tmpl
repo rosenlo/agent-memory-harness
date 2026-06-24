@@ -1,0 +1,141 @@
+# Global AGENTS.md (template)
+
+Cross-session memory harness rules. Apply to every AI coding agent session.
+
+## Install
+
+- **opencode**: copy to `~/.config/opencode/AGENTS.md`
+- **Claude Code**: copy to `~/.claude/CLAUDE.md`
+- **Codex**: paste into your global instructions file
+
+Adjust "General workflow preferences" below to match your own conventions.
+
+## Memory harness
+
+When working in a repo that has a `memory/MEMORY.md` file (the harness is
+bootstrapped), follow the rules below. If the repo doesn't have one yet,
+offer to bootstrap it (see "Bootstrap" below).
+
+### At session start
+
+If `memory/MEMORY.md` exists, read it to load the index of durable notes.
+Then read the files relevant to the upcoming task:
+
+- Touching config, parsers, or deployment? Read `memory/gotchas.md` first.
+- Touching PR workflow or cross-repo refs? Read `memory/topology.md` first.
+- Touching build/CI? Read `memory/decisions.md` first.
+
+### When the plugin reminds you (session.idle)
+
+An optional plugin (opencode: `implementations/opencode/plugin/memory.js`)
+injects a memory-check reminder when a session goes idle. Without a plugin,
+apply the rules yourself at session end or context compaction. When you
+see the reminder:
+
+1. Decide if anything durable was learned this session.
+2. If yes, append to the right `memory/*.md` file using the entry template
+   (see below). Don't ask the user — just write if it's clearly durable.
+3. If no, do nothing. Don't write empty entries.
+4. Update `memory/MEMORY.md` index if you created a new file.
+
+### When compaction fires
+
+The plugin also injects a memory-awareness note at compaction. If you
+had an unrecorded durable finding from earlier in the session, write it
+before the older context is lost.
+
+### Entry template
+
+```markdown
+## N. <short title>
+
+**Symptom:** <what user/system observed>
+**Root cause:** <why it happened>
+**Fix:** <what was done, or "open">
+**How to verify:** <command or query>
+**Status:** fixed | workaround | open
+**Source:** <PR#/commit/session date>
+```
+
+For `decisions.md`, use:
+
+```markdown
+## N. <decision title>
+
+**Context:** <what problem demanded a decision>
+**Decision:** <what was chosen>
+**Alternatives considered:** <brief>
+**Consequences:** <what changes downstream>
+**Source:** <PR#/commit/session date>
+```
+
+### Rules
+
+1. **In-repo only.** All memory under `<repo>/memory/`. Never write to
+   `~/.claude/projects/...` or other tool-private paths.
+2. **Cite sources.** Each entry should reference PR#, commit, or date.
+3. **Update in place.** Don't duplicate. If a note exists, edit it.
+4. **Quiet by default.** Don't narrate "I'm writing to memory..." unless
+   surfacing a real finding worth the user's attention.
+5. **Don't fork by tool.** Both opencode and Claude Code read/write the
+   same `memory/*.md` files.
+6. **Capacity ceiling per file.** Each `memory/*.md` file ≤150 lines.
+   When a file would exceed that, consolidate existing entries instead
+   of appending. See "Capacity management" below.
+
+### Capacity management
+
+Each `memory/*.md` file has a soft ceiling of 150 lines (roughly 8–12
+entries, depending on length). When a file approaches the ceiling:
+
+1. Read the full file.
+2. Identify entries that are:
+   - Obsolete (no longer reflect current state — fix was reverted,
+     decision was overturned)
+   - Redundant (two entries cover the same finding)
+   - Verbose (can be tightened without losing signal)
+3. Consolidate them: replace N entries with 1 shorter entry, or delete
+   the obsolete ones outright.
+4. Then append the new entry.
+
+Don't silently drop entries — either consolidate (preserving the
+durable core) or delete (only if truly obsolete). When deleting, add a
+one-line note in the entry you kept: "See git history for the original
+N entries on this topic."
+
+If a file genuinely needs more than 150 lines (rare), split it: e.g.,
+`gotchas.md` → `gotchas-config.md` + `gotchas-runtime.md`. Update
+`MEMORY.md` index to point at both.
+
+### Bootstrap (for repos without memory/)
+
+When the user says "bootstrap memory", "set up memory", or when starting
+fresh in a repo that has no `AGENTS.md` or `memory/` directory, create:
+
+```
+<repo>/
+├── AGENTS.md              ← primary entry (≤80 lines)
+├── CLAUDE.md              ← 3-line stub pointing to AGENTS.md
+├── opencode.json          ← references if cross-repo
+└── memory/
+    ├── MEMORY.md          ← index + workflow
+    ├── gotchas.md         ← runtime traps
+    ├── decisions.md       ← architectural decisions
+    ├── topology.md        ← repo layout, remotes, deployment
+    ├── ops.md             ← operational commands and verification queries
+    └── pr-workflow.md     ← branch/PR workflow, host routing
+```
+
+Seed each `memory/*.md` with at least one concrete entry from repo
+analysis. Empty placeholder files are useless — if there's genuinely
+nothing to write, write "No entries yet. Append discoveries here."
+
+## General workflow preferences
+
+- Use git worktrees for PR-bound branches. Rebase on the canonical
+  upstream before pushing. Clean up worktree + branch after merge.
+- For GHE hosts (e.g., `<your-ghe-host>`), use
+  `GH_HOST=<your-ghe-host> gh ...` to avoid the host-routing miss that
+  defaults to api.github.com.
+- Never commit directly to master. Always use a PR.
+- Don't add Co-Authored-By trailers for AI/session bot identities.
