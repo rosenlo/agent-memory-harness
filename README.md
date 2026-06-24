@@ -64,6 +64,16 @@ This creates:
     └── pr-workflow.md     ← branch/PR workflow, host routing
 ```
 
+## Already have AGENTS.md?
+
+If your repo already has an `AGENTS.md`, the bootstrap skill does **not** overwrite it. It only:
+
+- Appends a `## Cross-session Memory` section pointing at `memory/*.md`
+- Leaves your existing rules, build commands, and architecture notes untouched
+- Creates `CLAUDE.md` as a 3-line stub pointing back to `AGENTS.md` (or adds one pointer line if `CLAUDE.md` already has substantial content)
+
+If your `AGENTS.md` already has its own memory conventions, you can either adopt this harness's structure or keep yours — the methodology works either way as long as the entries are durable and indexed.
+
 ## How it works
 
 See [methodology.md](methodology.md) for the design and rules.
