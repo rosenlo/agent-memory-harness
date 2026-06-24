@@ -37,8 +37,8 @@ Reads <repo>/memory/gotchas.md, decisions.md, etc. as task dictates
 
 ## Known limitations
 
-- **No plugin.** Codex has no equivalent of opencode's `memory.js` plugin, so there is no proactive `session.idle` or `session.compacting` reminder. Memory writes rely on the session-end rule in the global `AGENTS.md`.
-- **No verified auto-read.** Codex CLI may or may not follow `@memory/*.md` references the same way opencode and Claude Code do. This is the primary unverified assumption.
+- **No plugin.** Codex has no equivalent of OpenCode's `memory.js` plugin, so there is no proactive `session.idle` or `session.compacting` reminder. Memory writes rely on the session-end rule in the global `AGENTS.md`.
+- **No verified auto-read.** Codex CLI may or may not follow `@memory/*.md` references the same way OpenCode and Claude Code do. This is the primary unverified assumption.
 - **No tool-call tracking.** Without a plugin, Codex won't know which files you edited this session unless you tell it or it infers from the conversation.
 
 ## Manual workflow (works regardless of auto-read)

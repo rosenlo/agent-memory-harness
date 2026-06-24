@@ -1,8 +1,8 @@
 # agent-memory-harness
 
-Cross-session, in-repo memory for AI coding agents. Works with opencode, Claude Code, and Codex.
+Cross-session, in-repo memory for AI coding agents. Works with OpenCode, Claude Code, and Codex.
 
-> **Not an agent runtime.** This is a portable, repo-local memory layer that those runtimes read via `AGENTS.md` / `CLAUDE.md`. It does not replace Claude Code, opencode, or Codex.
+> **Not an agent runtime.** This is a portable, repo-local memory layer that those runtimes read via `AGENTS.md` / `CLAUDE.md`. It does not replace Claude Code, OpenCode, or Codex.
 
 ## Why
 
@@ -22,19 +22,19 @@ Copy the template to your agent's global instructions location:
 
 | Tool | Location |
 |------|----------|
-| opencode | `~/.config/opencode/AGENTS.md` |
+| OpenCode | `~/.config/opencode/AGENTS.md` |
 | Claude Code | `~/.claude/CLAUDE.md` |
 | Codex | your global instructions file (e.g. `~/.codex/AGENTS.md`) |
 
 ```bash
-# opencode
+# OpenCode
 cp agents/AGENTS.md.tmpl ~/.config/opencode/AGENTS.md
 
 # Claude Code
 cp agents/AGENTS.md.tmpl ~/.claude/CLAUDE.md
 ```
 
-### 2. (Optional) Install the opencode plugin
+### 2. (Optional) Install the OpenCode plugin
 
 The plugin proactively reminds the agent to write findings at session idle and context compaction. Other tools rely on the session-end rule in the global AGENTS.md.
 
@@ -84,7 +84,7 @@ TL;DR:
 - Entries use a fixed template (Symptom / Root cause / Fix / Verify / Status / Source)
 - 150-line soft ceiling per file forces consolidation over accumulation
 - Agents discover the harness by reading `AGENTS.md` at session start; `MEMORY.md` indexes the files
-- The opencode plugin adds proactive reminders at `session.idle` and `session.compacting`
+- The OpenCode plugin adds proactive reminders at `session.idle` and `session.compacting`
 
 ## Safety
 
@@ -106,7 +106,7 @@ bootstrap/
 
 implementations/
 └── opencode/
-    ├── plugin/memory.js            # opencode plugin (one possible implementation)
+    ├── plugin/memory.js            # OpenCode plugin (one possible implementation)
     └── package.json                # type: module
 
 examples/                           # Sanitized examples (future)
@@ -121,7 +121,7 @@ examples/                           # Sanitized examples (future)
 | Shared with team | No | Yes (version-controlled) |
 | Tool-portable | No (Hermes-only) | Yes (any agent reading `AGENTS.md`/`CLAUDE.md`) |
 | Capacity | Hard char limit (~1300 tokens) | 150-line soft ceiling per file |
-| Write trigger | Background review loop | Plugin reminder (opencode) or session-end rule |
+| Write trigger | Background review loop | Plugin reminder (OpenCode) or session-end rule |
 
 Complementary, not competing. Same person could use both.
 

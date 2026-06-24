@@ -7,7 +7,7 @@ The design behind `agent-memory-harness`: why in-repo memory, how it's structure
 AI coding agents lose context between sessions. By default:
 
 - Discoveries from one session (gotchas, decisions, ops tricks) are lost
-- Different agents (opencode, Claude Code, Codex) don't share notes
+- Different agents (OpenCode, Claude Code, Codex) don't share notes
 - Onboarding a new repo means re-deriving the same traps every time
 
 Tool-home memory (e.g., Hermes Agent's `~/.hermes/memories/`) addresses the first problem but not the others — it's personal, tool-bound, and not versioned.
@@ -20,7 +20,7 @@ Three pieces make it work:
 
 1. **In-repo `memory/` directory** — the actual notes, version-controlled
 2. **Global rules template** — copied to `~/.config/opencode/AGENTS.md` (or `~/.claude/CLAUDE.md`); tells every agent the harness exists, how to read it, and when to write
-3. **Optional per-tool plugin** — proactive reminders (e.g., opencode's `memory.js` triggers on `session.idle` and `session.compacting`)
+3. **Optional per-tool plugin** — proactive reminders (e.g., OpenCode's `memory.js` triggers on `session.idle` and `session.compacting`)
 
 The first two are tool-agnostic. The third is per-tool.
 
@@ -72,7 +72,7 @@ The fixed shape makes entries scannable, diffable, and easy to consolidate when 
 
 Three triggers, in order of how proactive they are:
 
-1. **Plugin reminder** (opencode only): fires on `session.idle` and `session.compacting`. Agent decides if anything durable was learned; if yes, appends to the right `memory/*.md` file without asking the user.
+1. **Plugin reminder** (OpenCode only): fires on `session.idle` and `session.compacting`. Agent decides if anything durable was learned; if yes, appends to the right `memory/*.md` file without asking the user.
 2. **Session end**: agent applies the rules from `AGENTS.md`; if no plugin, this is the only trigger.
 3. **Compaction**: if older context is about to be lost, the agent writes any unrecorded durable finding first.
 
@@ -93,7 +93,7 @@ The ceiling forces consolidation over accumulation — a memory file that grows 
 
 ## How agents discover the harness
 
-At session start, the agent reads the repo's `AGENTS.md` (opencode) or `CLAUDE.md` (Claude Code). That file tells them: "If `memory/MEMORY.md` exists, read it to load the index of durable notes." The agent then reads the relevant `memory/*.md` files based on the task at hand (see "Read before" column above).
+At session start, the agent reads the repo's `AGENTS.md` (OpenCode) or `CLAUDE.md` (Claude Code). That file tells them: "If `memory/MEMORY.md` exists, read it to load the index of durable notes." The agent then reads the relevant `memory/*.md` files based on the task at hand (see "Read before" column above).
 
 If the repo doesn't have memory yet, the global rules say: "Offer to bootstrap it." The `bootstrap-memory` skill (in `bootstrap/SKILL.md`) handles the setup.
 
@@ -113,7 +113,7 @@ Agent-home memory still has a place — user preferences, environment quirks, cr
 
 | Tool | Reads | Writes | Plugin? |
 |------|-------|--------|---------|
-| opencode | `AGENTS.md` at session start | yes | Yes (`implementations/opencode/plugin/memory.js`) |
+| OpenCode | `AGENTS.md` at session start | yes | Yes (`implementations/opencode/plugin/memory.js`) |
 | Claude Code | `CLAUDE.md` at session start | yes | No (relies on session-end rule) |
 | Codex | global instructions at session start | yes | No (relies on session-end rule) |
 

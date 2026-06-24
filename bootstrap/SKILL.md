@@ -1,6 +1,6 @@
 ---
 name: bootstrap-memory
-description: Set up cross-session memory harness for a repo. Creates memory/ directory with seeded notes plus AGENTS.md/CLAUDE.md/opencode.json entries that reference them. Use when user says "bootstrap memory", "set up memory", "init memory harness", or when starting fresh in a repo that has no memory/ directory. Tool-agnostic: opencode, Claude Code, and Codex all read the same files. Optional: pair with the opencode memory.js plugin (one implementation in implementations/opencode/).
+description: 'Set up cross-session memory harness for a repo. Creates memory/ directory with seeded notes plus AGENTS.md/CLAUDE.md/opencode.json entries that reference them. Use when user says "bootstrap memory", "set up memory", "init memory harness", or when starting fresh in a repo that has no memory/ directory. Tool-agnostic: OpenCode, Claude Code, and Codex all read the same files. Optional: pair with the OpenCode memory.js plugin (one implementation in implementations/opencode/).'
 ---
 
 # Bootstrap Memory Harness
@@ -73,8 +73,8 @@ Stage all changes, commit with message like:
 docs: bootstrap cross-session memory harness
 
 Adds memory/ directory with seeded notes (gotchas, decisions, topology,
-ops, pr-workflow) plus AGENTS.md references. Shared by opencode and
-Claude Code. Designed to work with the opencode memory.js plugin.
+ops, pr-workflow) plus AGENTS.md references. Shared by OpenCode and
+Claude Code. Designed to work with the OpenCode memory.js plugin.
 ```
 
 Open a PR using the repo's standard workflow (fork model? worktree? see existing commits for convention).
@@ -86,7 +86,7 @@ Open a PR using the repo's standard workflow (fork model? worktree? see existing
 ```markdown
 # Memory Index
 
-Cross-session memory for this repo. Shared by opencode and Claude Code.
+Cross-session memory for this repo. Shared by OpenCode and Claude Code.
 Version-controlled with the repo. Both tools read/write here.
 
 ## Files
@@ -162,7 +162,7 @@ Use the entry templates below. Seed each file with at least one concrete entry.
 ## Cross-session Memory
 
 This repo uses a cross-session memory system under `memory/`. Both
-opencode and Claude Code read/write the same files.
+OpenCode and Claude Code read/write the same files.
 
 - @memory/MEMORY.md — index of all notes (read at session start)
 - @memory/gotchas.md — runtime traps (READ before config/parser changes)
@@ -173,7 +173,7 @@ opencode and Claude Code read/write the same files.
 
 When you discover something durable, append to the right `memory/*.md`
 file using the entry template. Don't ask the user — just write if it's
-clearly durable. The opencode `memory.js` plugin reminds you at
+clearly durable. The OpenCode `memory.js` plugin reminds you at
 `session.idle` and `session.compacting`.
 
 ## Related Repos
@@ -218,7 +218,7 @@ Skip if no cross-repo references. Use `path` for local sibling dirs (but `reposi
 2. **Cite sources.** Each entry should reference PR#, commit, or date.
 3. **Update in place.** Don't duplicate. If a note exists, edit it.
 4. **Quiet by default.** Don't narrate "I'm writing to memory..." unless surfacing a real finding worth the user's attention.
-5. **Don't fork by tool.** Both opencode and Claude Code read/write the same `memory/*.md` files.
+5. **Don't fork by tool.** Both OpenCode and Claude Code read/write the same `memory/*.md` files.
 6. **Keep AGENTS.md lean.** ≤80 lines. Details go in `memory/*.md`, indexed from `MEMORY.md`.
 7. **No empty placeholders.** If a file genuinely has no content yet, write "No entries yet. Append discoveries here." — but try harder to seed something real.
 8. **Capacity ceiling per file.** Each `memory/*.md` file ≤150 lines. When a file would exceed that, consolidate existing entries instead of appending (see below).
@@ -241,6 +241,6 @@ If a file genuinely needs more than 150 lines (rare), split it: e.g., `gotchas.m
 
 ## After bootstrap
 
-- Tell the user: "Memory harness bootstrapped. Future sessions will read these files via AGENTS.md/CLAUDE.md references. The opencode plugin (`implementations/opencode/plugin/memory.js`, if installed) will proactively remind you to write findings here. Claude Code and Codex read the same files via AGENTS.md references."
+- Tell the user: "Memory harness bootstrapped. Future sessions will read these files via AGENTS.md/CLAUDE.md references. The OpenCode plugin (`implementations/opencode/plugin/memory.js`, if installed) will proactively remind you to write findings here. Claude Code and Codex read the same files via AGENTS.md references."
 - Offer to walk through the seeded entries if the user wants to review.
 - Don't auto-bootstrap in other repos — wait for the user to ask or trigger this skill again.

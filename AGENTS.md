@@ -1,6 +1,6 @@
 # AGENTS.md
 
-agent-memory-harness: portable, in-repo memory for AI coding agents (opencode, Claude Code, Codex).
+agent-memory-harness: portable, in-repo memory for AI coding agents (OpenCode, Claude Code, Codex).
 
 ## Build & Test
 
@@ -16,13 +16,13 @@ node -e 'import("./implementations/opencode/plugin/memory.js").then(m => console
 
 - `agents/` — global rules template (`AGENTS.md.tmpl`) + per-repo stub (`CLAUDE.md.tmpl`)
 - `bootstrap/SKILL.md` — one-shot skill to seed `memory/` in a new repo
-- `implementations/opencode/plugin/memory.js` — proactive reminder plugin (opencode-only)
+- `implementations/opencode/plugin/memory.js` — proactive reminder plugin (OpenCode-only)
 - `methodology.md` — the design doc
 - `README.md` — install + overview
 
 ## Cross-session Memory
 
-This repo uses its own harness. Memory lives under `memory/`. Both opencode and Claude Code read/write the same files.
+This repo uses its own harness. Memory lives under `memory/`. Both OpenCode and Claude Code read/write the same files.
 
 - @memory/MEMORY.md — index of all notes (read at session start)
 - @memory/gotchas.md — known limitations (READ before touching plugin or Codex docs)

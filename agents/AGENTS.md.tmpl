@@ -4,7 +4,7 @@ Cross-session memory harness rules. Apply to every AI coding agent session.
 
 ## Install
 
-- **opencode**: copy to `~/.config/opencode/AGENTS.md`
+- **OpenCode**: copy to `~/.config/opencode/AGENTS.md`
 - **Claude Code**: copy to `~/.claude/CLAUDE.md`
 - **Codex**: paste into your global instructions file
 
@@ -35,7 +35,7 @@ Then read the files relevant to the upcoming task:
 
 ### When the plugin reminds you (session.idle)
 
-An optional plugin (opencode: `implementations/opencode/plugin/memory.js`)
+An optional plugin (OpenCode: `implementations/opencode/plugin/memory.js`)
 injects a memory-check reminder when a session goes idle. Without a plugin,
 apply the rules yourself at session end or context compaction. When you
 see the reminder:
@@ -85,7 +85,7 @@ For `decisions.md`, use:
 3. **Update in place.** Don't duplicate. If a note exists, edit it.
 4. **Quiet by default.** Don't narrate "I'm writing to memory..." unless
    surfacing a real finding worth the user's attention.
-5. **Don't fork by tool.** Both opencode and Claude Code read/write the
+5. **Don't fork by tool.** Both OpenCode and Claude Code read/write the
    same `memory/*.md` files.
 6. **Capacity ceiling per file.** Each `memory/*.md` file ≤150 lines.
    When a file would exceed that, consolidate existing entries instead

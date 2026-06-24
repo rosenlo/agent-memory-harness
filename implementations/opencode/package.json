@@ -1,7 +1,7 @@
 {
   "name": "agent-memory-harness-opencode",
   "version": "0.1.0",
-  "description": "opencode plugin implementation of the agent-memory-harness methodology.",
+  "description": "OpenCode plugin implementation of the agent-memory-harness methodology.",
   "type": "module",
   "private": true,
   "main": "plugin/memory.js",

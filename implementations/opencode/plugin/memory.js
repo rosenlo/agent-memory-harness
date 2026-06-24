@@ -1,4 +1,4 @@
-// Cross-session memory harness for opencode.
+// Cross-session memory harness for OpenCode.
 //
 // Design: plugin injects REMINDER at session.idle and a CONTEXT note at
 // compaction time. The agent (driven by AGENTS.md rules) decides what to
@@ -21,7 +21,7 @@
 //   <repo>/memory/ops.md          — operational commands
 //   <repo>/memory/pr-workflow.md  — branch/PR workflow
 //
-// Both opencode and Claude Code read/write the same files. Nothing lives
+// Both OpenCode and Claude Code read/write the same files. Nothing lives
 // in tool-private paths (~/.claude/projects/...).
 
 import { readFile, stat } from "node:fs/promises";
