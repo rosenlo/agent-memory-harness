@@ -1,0 +1,110 @@
+# agent-memory-harness
+
+Cross-session, in-repo memory for AI coding agents. Works with opencode, Claude Code, and Codex.
+
+## Why
+
+Agents lose context between sessions. Tool-home memory (like Hermes Agent's `~/.hermes/memories/`) helps, but it's:
+
+- **Personal** — only you benefit, not your team
+- **Tool-bound** — locked to one agent's storage format
+- **Not versioned** — no commit history, no PR review
+
+This harness puts memory **in the repo** under `memory/`. Every agent that reads `AGENTS.md` (or `CLAUDE.md`) gets the same durable notes — gotchas, decisions, topology, ops, PR workflow — version-controlled alongside the code.
+
+## Quick start
+
+### 1. Install global rules
+
+Copy the template to your agent's global instructions location:
+
+| Tool | Location |
+|------|----------|
+| opencode | `~/.config/opencode/AGENTS.md` |
+| Claude Code | `~/.claude/CLAUDE.md` |
+| Codex | your global instructions file (e.g. `~/.codex/AGENTS.md`) |
+
+```bash
+# opencode
+cp agents/AGENTS.md.tmpl ~/.config/opencode/AGENTS.md
+
+# Claude Code
+cp agents/AGENTS.md.tmpl ~/.claude/CLAUDE.md
+```
+
+### 2. (Optional) Install the opencode plugin
+
+The plugin proactively reminds the agent to write findings at session idle and context compaction. Other tools rely on the session-end rule in the global AGENTS.md.
+
+```bash
+mkdir -p ~/.config/opencode/plugins
+cp implementations/opencode/plugin/memory.js ~/.config/opencode/plugins/
+```
+
+### 3. Bootstrap memory in a repo
+
+Use the `bootstrap-memory` skill (or follow `bootstrap/SKILL.md` manually) in any repo where you want persistent memory:
+
+> "bootstrap memory in this repo"
+
+This creates:
+
+```
+<repo>/
+├── AGENTS.md              ← primary entry, references @memory/*.md
+├── CLAUDE.md              ← stub pointing to AGENTS.md
+└── memory/
+    ├── MEMORY.md          ← index + workflow
+    ├── gotchas.md         ← runtime traps
+    ├── decisions.md       ← architectural decisions
+    ├── topology.md        ← repo layout, remotes, deployment
+    ├── ops.md             ← operational commands and verification queries
+    └── pr-workflow.md     ← branch/PR workflow, host routing
+```
+
+## How it works
+
+See [methodology.md](methodology.md) for the design and rules.
+
+TL;DR:
+
+- Each `memory/*.md` file holds a category of durable notes
+- Entries use a fixed template (Symptom / Root cause / Fix / Verify / Status / Source)
+- 150-line soft ceiling per file forces consolidation over accumulation
+- Agents discover the harness by reading `AGENTS.md` at session start; `MEMORY.md` indexes the files
+- The opencode plugin adds proactive reminders at `session.idle` and `session.compacting`
+
+## Repo layout
+
+```
+agents/                              # Templates any tool can use
+├── AGENTS.md.tmpl                  # Global rules template
+└── CLAUDE.md.tmpl                  # Per-repo stub (3 lines, points to AGENTS.md)
+
+bootstrap/
+└── SKILL.md                        # One-shot skill to bootstrap memory/ in a new repo
+
+implementations/
+└── opencode/
+    ├── plugin/memory.js            # opencode plugin (one possible implementation)
+    └── package.json                # type: module
+
+examples/                           # Sanitized examples (future)
+```
+
+## Compared to Hermes Agent memory
+
+| Aspect | Hermes | This harness |
+|--------|--------|--------------|
+| Location | `~/.hermes/memories/` (user-home) | `<repo>/memory/` (in-repo) |
+| Scope | Agent-level (user prefs, env) | Project-level (repo gotchas, decisions) |
+| Shared with team | No | Yes (version-controlled) |
+| Tool-portable | No (Hermes-only) | Yes (any agent reading `AGENTS.md`/`CLAUDE.md`) |
+| Capacity | Hard char limit (~1300 tokens) | 150-line soft ceiling per file |
+| Write trigger | Background review loop | Plugin reminder (opencode) or session-end rule |
+
+Complementary, not competing. Same person could use both.
+
+## License
+
+MIT
