@@ -126,3 +126,32 @@ The methodology works without a plugin. The plugin just adds proactive reminders
 - **Empty placeholders.** If a category genuinely has no content, write "No entries yet. Append discoveries here." — but try harder to seed something real from git log, README, or recent commits.
 - **Silent drops.** Don't delete entries without a trace. Either consolidate (preserving the durable core) or leave a one-line note in the kept entry.
 - **Narrating every write.** Don't say "I'm writing to memory..." unless surfacing a real finding worth the user's attention.
+
+## Migration from tool-private memory
+
+When adopting this harness on a repo that already has tool-private memory (e.g., Claude Code auto memory at `~/.claude/projects/<project>/memory/`), do **not** copy it wholesale into `memory/`. The two memories serve different scopes:
+
+| Layer | Scope | Where |
+|-------|-------|-------|
+| Tool-private memory (e.g., Claude Code auto memory) | personal, machine-local, tool-private | tool's own directory |
+| Repo `memory/` | project, portable, version-controlled, shared across agents | `<repo>/memory/` |
+| Session transcript | temporary task context | not persisted |
+
+Migrate by **curation**:
+
+- **Durable project facts** (gotchas, decisions, topology, ops, PR workflow) → repo `memory/`
+- **Personal / tool-local habits** (output style, preferred commands, environment quirks) → keep in tool-private memory
+- **Temporary session state** → discard
+- **Secrets, private URLs, raw logs, customer data** → never migrate, never store
+
+### Default: coexist and route
+
+Keep tool-private memory enabled. Use `AGENTS.md` / `CLAUDE.md` rules to tell the agent where to write what. Durable project findings go to repo `memory/`; personal habits stay in tool-private memory.
+
+### Optional: strict single-source-of-truth
+
+Disable tool-private memory if you want `memory/` to be the only durable project memory. For Claude Code: `autoMemoryEnabled: false` in `.claude/settings.json`, or `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`.
+
+### Experimental: redirect tool memory into repo `memory/`
+
+Some tools (e.g., Claude Code's `autoMemoryDirectory`) support pointing auto memory at a custom path. Not recommended as the default — the tool's own file schema (e.g., Claude's `MEMORY.md` + topic files) conflicts with this harness's taxonomy (`gotchas.md`, `decisions.md`, etc.).

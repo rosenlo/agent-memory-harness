@@ -74,6 +74,63 @@ If your repo already has an `AGENTS.md`, the bootstrap skill does **not** overwr
 
 If your `AGENTS.md` already has its own memory conventions, you can either adopt this harness's structure or keep yours — the methodology works either way as long as the entries are durable and indexed.
 
+## Tool integration
+
+### Claude Code
+
+Claude Code has its own auto memory at `~/.claude/projects/<project>/memory/` that records build commands, debug insights, architecture notes, and personal workflow habits. This harness does **not** replace it by default — the two memories serve different scopes:
+
+| Layer | Scope | Where |
+|-------|-------|-------|
+| Claude Code auto memory | personal, machine-local, tool-private | `~/.claude/projects/...` |
+| Repo `memory/` | project, portable, version-controlled, shared across agents | `<repo>/memory/` |
+| Session transcript | temporary task context | not persisted |
+
+**Default: coexist and route.** Keep Claude Code auto memory enabled. Use `CLAUDE.md` to tell Claude where to write what:
+
+```markdown
+# CLAUDE.md
+
+This repo uses `AGENTS.md` as the primary instruction file. Read **@AGENTS.md** at session start.
+
+Durable project findings (gotchas, decisions, topology, ops, PR workflow)
+go into `memory/*.md` — not Claude Code auto memory.
+Personal habits and tool-local preferences stay in auto memory.
+```
+
+**Optional: strict single-source-of-truth.** If you want `memory/` to be the only durable project memory (e.g., for CI / SDK / automation / multi-tenant isolation), disable Claude Code auto memory:
+
+```json
+// .claude/settings.json
+{
+  "autoMemoryEnabled": false
+}
+```
+
+Or via environment variable: `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`.
+
+**Experimental: redirect `autoMemoryDirectory`.** Claude Code supports pointing auto memory at a custom path, but it uses its own `MEMORY.md` + topic-file schema that may conflict with this harness's taxonomy. Not recommended as the default integration.
+
+### Migrating existing Claude Code auto memory
+
+Do not copy tool-private memory wholesale into `memory/`. Migrate by curation:
+
+- **Durable project facts** (gotchas, decisions, topology, ops, PR workflow) → repo `memory/`
+- **Personal / tool-local habits** (output style, preferred commands, environment quirks) → keep in Claude Code auto memory
+- **Temporary session state** → discard
+- **Secrets, private URLs, raw logs, customer data** → never migrate, never store
+
+Prompt Claude Code to do a one-time curated migration:
+
+```text
+Review your existing Claude Code auto memory for this repository.
+Migrate only durable project-level findings into repo-local `memory/`.
+Do not copy raw logs, secrets, private URLs, personal preferences, or
+temporary session notes. Classify entries into gotchas / decisions /
+topology / ops / pr-workflow. Keep each entry concise and structured.
+After migration, summarize what was migrated and what was left out.
+```
+
 ## How it works
 
 See [methodology.md](methodology.md) for the design and rules.
