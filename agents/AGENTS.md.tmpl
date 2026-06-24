@@ -10,6 +10,14 @@ Cross-session memory harness rules. Apply to every AI coding agent session.
 
 Adjust "General workflow preferences" below to match your own conventions.
 
+## Safety
+
+Never store secrets, tokens, credentials, private URLs, customer data, personal data, raw logs, or production incident details in `memory/*.md`.
+
+If a durable finding depends on sensitive information, record only the generalized lesson and cite a safe source such as a PR number or local date.
+
+This rule applies to every repo bootstrapped with this harness, not just private ones. Public repos are commit-exposed by default.
+
 ## Memory harness
 
 When working in a repo that has a `memory/MEMORY.md` file (the harness is

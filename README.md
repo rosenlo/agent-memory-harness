@@ -2,6 +2,8 @@
 
 Cross-session, in-repo memory for AI coding agents. Works with opencode, Claude Code, and Codex.
 
+> **Not an agent runtime.** This is a portable, repo-local memory layer that those runtimes read via `AGENTS.md` / `CLAUDE.md`. It does not replace Claude Code, opencode, or Codex.
+
 ## Why
 
 Agents lose context between sessions. Tool-home memory (like Hermes Agent's `~/.hermes/memories/`) helps, but it's:
@@ -73,6 +75,14 @@ TL;DR:
 - 150-line soft ceiling per file forces consolidation over accumulation
 - Agents discover the harness by reading `AGENTS.md` at session start; `MEMORY.md` indexes the files
 - The opencode plugin adds proactive reminders at `session.idle` and `session.compacting`
+
+## Safety
+
+`memory/*.md` is committed to git and may land on a public remote. Treat it like any other source file:
+
+- **Never store** secrets, tokens, credentials, private URLs, customer data, personal data, raw production logs, or incident details in `memory/`.
+- If a durable finding depends on sensitive information, record only the generalized lesson and cite a safe source (PR number, commit hash, or local date).
+- This rule is baked into `agents/AGENTS.md.tmpl` so every bootstrapped repo inherits it.
 
 ## Repo layout
 
