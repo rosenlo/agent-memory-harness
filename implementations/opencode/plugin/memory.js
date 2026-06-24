@@ -6,9 +6,12 @@
 // the agent) while removing the "I forgot to write it down" failure mode.
 //
 // Mid-session: tracks files the agent edited (excluding memory/*.md itself)
-// in a per-session list. At session.idle the list is injected alongside the
-// reminder so the agent can review what it actually did and decide if any
-// of those changes surface a durable finding worth recording.
+// in a per-session list. At session.idle the list is merged with
+// `git diff --name-only HEAD` to also catch bash-generated changes
+// (sed -i, pnpm format, go fmt, codegen) that don't surface through tool
+// args. The merged list is injected alongside the reminder so the agent
+// can review what it actually changed and decide if any of those changes
+// surface a durable finding worth recording.
 //
 // Memory layout (in-repo, version-controlled):
 //   <repo>/memory/MEMORY.md       — index
@@ -23,6 +26,10 @@
 
 import { readFile, stat } from "node:fs/promises";
 import { join, relative } from "node:path";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileP = promisify(execFile);
 
 const IDLE_REMINDER_HEADER = `## Memory check (auto-injected by memory plugin)
 
@@ -121,6 +128,27 @@ function clearEdits(sessionID) {
   sessionEdits.delete(sessionID);
 }
 
+// Returns files with uncommitted changes (staged + unstaged) vs HEAD.
+// Captures bash-generated changes (sed -i, pnpm format, go fmt, codegen)
+// that don't surface through tool args. Returns [] if git is unavailable
+// or the repo has no HEAD yet (fresh repo with no commits).
+async function gitDiffNames(cwd) {
+  if (!cwd) return [];
+  try {
+    const { stdout } = await execFileP("git", ["diff", "--name-only", "HEAD"], { cwd });
+    return stdout.split("\n").map((s) => s.trim()).filter(Boolean);
+  } catch {
+    // No HEAD (fresh repo) or git not installed — fall back to
+    // staged-only diff which works without HEAD.
+    try {
+      const { stdout } = await execFileP("git", ["diff", "--name-only", "--cached"], { cwd });
+      return stdout.split("\n").map((s) => s.trim()).filter(Boolean);
+    } catch {
+      return [];
+    }
+  }
+}
+
 export const MemoryPlugin = async ({ client, directory, worktree }) => {
   const cwd = worktree || directory;
 
@@ -153,13 +181,20 @@ export const MemoryPlugin = async ({ client, directory, worktree }) => {
       }
 
       const edits = getEditsList(sessionID);
+      const gitChanged = (await gitDiffNames(cwd)).filter(
+        (p) => !MEMORY_EDIT_PATTERN.test(p)
+      );
+      // Merge and dedupe: tool-tracked edits + git-detected changes.
+      const allEdits = [...new Set([...edits, ...gitChanged])];
       let reminder = IDLE_REMINDER_HEADER;
 
-      if (edits.length > 0) {
-        reminder += `\n\nFiles you edited this session:\n`;
-        reminder += edits.map((p) => `- \`${p}\``).join("\n");
+      if (allEdits.length > 0) {
+        reminder += `\n\nFiles you edited this session (tool-tracked + git-detected):\n`;
+        reminder += allEdits.map((p) => `- \`${p}\``).join("\n");
         reminder += `\n\nReview the list above — any non-obvious finding from
-this work belongs in \`memory/*.md\`. Skip if the edits were routine.`;
+this work belongs in \`memory/*.md\`. Skip if the edits were routine.
+Note: git-detected entries may include changes from before this session
+if the working tree was already dirty.`;
       }
 
       reminder += `\n\n` + IDLE_REMINDER_TRIGGERS;

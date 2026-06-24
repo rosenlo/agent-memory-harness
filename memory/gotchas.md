@@ -6,10 +6,10 @@ Runtime traps and known limitations.
 
 **Symptom:** "Files you edited this session" in the idle reminder may omit files changed via bash (`sed -i`, `pnpm format`, `go fmt`, codegen, etc.).
 **Root cause:** Plugin only reads `args.filePath` / `args.path` from `write` / `edit` / `bash` tool calls. Bash commands that modify files indirectly don't appear in those args.
-**Fix:** Open — at `session.idle`, also run `git diff --name-only` and `git diff --cached --name-only`, merge with `sessionEdits`.
+**Fix:** At `session.idle`, run `git diff --name-only HEAD` (fallback to `--cached` for fresh repos) and merge with the tool-tracked `sessionEdits` list. Filter out `memory/*.md` from the git-detected set. Dedupe.
 **How to verify:** Run a session that does `sed -i 's/foo/bar/' file.txt` then triggers idle; check whether `file.txt` appears in the reminder.
-**Status:** open
-**Source:** external review, 2026-06-25
+**Status:** fixed
+**Source:** external review, 2026-06-25; fix applied same day
 
 ## 2. Codex support is unverified
 
