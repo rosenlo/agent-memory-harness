@@ -20,10 +20,11 @@ Architectural and design decisions for agent-memory-harness.
 
 ## 3. Bootstrap defaults to local-only, PR is optional
 
-**Context:** `bootstrap/SKILL.md` currently has "Commit and PR" as a required step. Too heavy for personal / public users who just want to try it.
+**Context:** `bootstrap/SKILL.md` originally had "Commit and PR" as a required step. Too heavy for personal / public users who just want to try it.
 **Decision:** Rewrite `SKILL.md` so commit / PR is an optional next step, not part of the main flow. Default is create files only.
 **Alternatives considered:** Quick mode vs PR mode flag (rejected — adds `SKILL.md` complexity for little gain).
-**Consequences:** PR workflow moves to a brief mention, not a numbered step.
+**Consequences:** PR workflow moves to a brief mention, not a numbered step. After-bootstrap message tells the user nothing was committed and to ask when ready.
+**Status:** applied (2026-06-25)
 **Source:** external review, 2026-06-25
 
 ## 4. Onboarding roadmap: examples + AGENTS.md coexistence first

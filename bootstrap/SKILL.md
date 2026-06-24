@@ -66,9 +66,12 @@ If it exists, add a `## Cross-session Memory` section with `@memory/*.md` refere
 
 If `CLAUDE.md` doesn't exist or is just a stub, ensure it points to `AGENTS.md`. If it has substantial original content (e.g., a long pre-existing CLAUDE.md), leave it alone but add one line at the top: `See @AGENTS.md for primary instructions including memory harness.`
 
-### 5. Commit and PR
+### 5. Optional: Commit or PR
 
-Stage all changes, commit with message like:
+By default, stop after creating/updating files and summarize what changed for the user. Many users want to try the harness locally before committing — don't auto-stage or auto-commit unless they ask.
+
+If the user asks for a commit or PR, stage the memory harness files (`AGENTS.md`, `CLAUDE.md`, `memory/`, optionally `opencode.json`) and commit with a message like:
+
 ```
 docs: bootstrap cross-session memory harness
 
@@ -77,7 +80,7 @@ ops, pr-workflow) plus AGENTS.md references. Shared by OpenCode and
 Claude Code. Designed to work with the OpenCode memory.js plugin.
 ```
 
-Open a PR using the repo's standard workflow (fork model? worktree? see existing commits for convention).
+If opening a PR, follow the repo's standard workflow (fork model? worktree? see existing commits for convention).
 
 ## File templates
 
@@ -158,6 +161,12 @@ Use the entry templates below. Seed each file with at least one concrete entry.
 ## Architecture (TL;DR)
 
 <5-10 line summary or simple diagram>
+
+## Safety
+
+Never store secrets, tokens, credentials, private URLs, customer data, personal data, raw logs, or production incident details in `memory/*.md`.
+
+If a durable finding depends on sensitive information, record only the generalized lesson and cite a safe source such as a PR number, commit hash, or local date.
 
 ## Cross-session Memory
 
@@ -241,6 +250,6 @@ If a file genuinely needs more than 150 lines (rare), split it: e.g., `gotchas.m
 
 ## After bootstrap
 
-- Tell the user: "Memory harness bootstrapped. Future sessions will read these files via AGENTS.md/CLAUDE.md references. The OpenCode plugin (`implementations/opencode/plugin/memory.js`, if installed) will proactively remind you to write findings here. Claude Code and Codex read the same files via AGENTS.md references."
+- Tell the user: "Memory harness bootstrapped. Files created locally — nothing committed. Future sessions will read these via AGENTS.md/CLAUDE.md references. The OpenCode plugin (`implementations/opencode/plugin/memory.js`, if installed) will proactively remind you to write findings here. Claude Code and Codex read the same files via AGENTS.md references. Tell me when you want to commit or open a PR."
 - Offer to walk through the seeded entries if the user wants to review.
 - Don't auto-bootstrap in other repos — wait for the user to ask or trigger this skill again.

@@ -24,7 +24,7 @@
 // Both OpenCode and Claude Code read/write the same files. Nothing lives
 // in tool-private paths (~/.claude/projects/...).
 
-import { readFile, stat } from "node:fs/promises";
+import { stat } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
