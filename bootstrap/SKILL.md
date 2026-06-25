@@ -44,12 +44,48 @@ Before writing anything, gather material for seeding the notes:
 - Read `README*`, existing `AGENTS.md`/`CLAUDE.md`, `CONTRIBUTING*`, `Makefile`/`Justfile`, CI config
 - Check for open PRs that hint at WIP conventions
 - Look for `HANDOFF*.md`, `TODO*.md`, scratch notes — capture durable insights from them
+- Check for existing `memory/` directory (different format) — may contain findings to curate
+- Check `~/.claude/projects/` for Claude Code auto memory — may have project-level findings worth curating
 - Identify build/test/lint commands
 - Identify host routing quirks (e.g., GHE hosts need `GH_HOST=<your-ghe-host>`)
 
-### 2. Create memory/ files
+### 2. Check for existing memory to migrate
 
-Write each file with at least one concrete entry from your analysis. Empty placeholder files are useless — if there's genuinely nothing to write for a category, write:
+Before creating fresh files, check two sources that may already contain durable findings worth curating:
+
+**a) Existing repo `memory/` (different format):**
+
+```bash
+ls memory/ 2>/dev/null
+```
+
+If `memory/` already exists with files that don't match the 6-category taxonomy (`gotchas.md`, `decisions.md`, `topology.md`, `ops.md`, `pr-workflow.md`), don't overwrite them. Instead, read each file and route findings into the right category:
+
+- Traps / quirks / "don't do X" → `gotchas.md`
+- "Why we chose Y over Z" → `decisions.md`
+- Repo layout / remotes / deployment → `topology.md`
+- Build / test / verify commands → `ops.md`
+- Branch / PR / merge conventions → `pr-workflow.md`
+
+Keep the original files in place — they're still useful as detailed references. The new taxonomy files become the indexed entry points. Add cross-references from the new files back to the originals where useful.
+
+**b) Claude Code auto memory (`~/.claude/projects/<project>/memory/`):**
+
+```bash
+ls ~/.claude/projects/ 2>/dev/null
+```
+
+If Claude Code has been used in this repo, it may have auto-saved findings there. Read them, extract durable **project-level** facts, and curate into the new taxonomy. Leave behind:
+
+- Personal / tool-local habits (output style, preferred commands)
+- Temporary session state
+- Anything that looks like a raw transcript
+
+**Migration rule:** curation, not copy. The goal is durable, indexed, scannable entries — not a bulk import of everything that existed before.
+
+### 3. Create memory/ files
+
+Write each file with at least one concrete entry from your analysis (and curation, if step 2 applied). Empty placeholder files are useless — if there's genuinely nothing to write for a category, write:
 
 ```
 No entries yet. Append discoveries here.
@@ -57,16 +93,16 @@ No entries yet. Append discoveries here.
 
 …but try harder. There's almost always something to seed from git log, README, or recent commits.
 
-### 3. Update AGENTS.md
+### 4. Update AGENTS.md
 
 If `AGENTS.md` doesn't exist, create it (≤80 lines, see template below).
 If it exists, add a `## Cross-session Memory` section with `@memory/*.md` references, keeping the existing content.
 
-### 4. Update CLAUDE.md
+### 5. Update CLAUDE.md
 
 If `CLAUDE.md` doesn't exist or is just a stub, ensure it points to `AGENTS.md`. If it has substantial original content (e.g., a long pre-existing CLAUDE.md), leave it alone but add one line at the top: `See @AGENTS.md for primary instructions including memory harness.`
 
-### 5. Optional: Commit or PR
+### 6. Optional: Commit or PR
 
 By default, stop after creating/updating files and summarize what changed for the user. Many users want to try the harness locally before committing — don't auto-stage or auto-commit unless they ask.
 
