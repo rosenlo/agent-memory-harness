@@ -16,19 +16,19 @@ Runtime traps and known limitations.
 
 **Source:** external review, 2026-06-25; fix applied same day
 
-## 2. Codex support is unverified
+## 2. Codex support is partially verified
 
-**Symptom:** README claims Codex works by pasting rules into `~/.codex/AGENTS.md`, but no version / path / behavior has been tested.
+**Symptom:** README claimed Codex would work by pasting rules into `~/.codex/AGENTS.md`, but the repo had no real Codex CLI verification.
 
-**Root cause:** No Codex CLI environment available to validate which file Codex reads at session start, or whether `memory/*.md` references are followed.
+**Root cause:** Earlier docs were written before a real Codex install was checked.
 
-**Fix:** Open — create `implementations/codex/README.md` with tested version, install path, known limitations, and manual workflow. README main table now points there with "currently unverified" label instead of stating `~/.codex/AGENTS.md` as fact.
+**Fix:** Document the current state in `implementations/codex/README.md` with the tested CLI version, the documented `~/.codex/AGENTS.md` path, and the remaining auth / end-to-end gap. README now points at that page as partially verified.
 
-**How to verify:** Install Codex CLI, point at a repo with `memory/` bootstrapped, confirm session start reads `AGENTS.md` and `memory/MEMORY.md`.
+**How to verify:** On `codex-cli 0.140.0`, `codex doctor` confirms a writable `CODEX_HOME` and repo discovery. A full `codex exec` session still needs working auth before we can confirm the loaded instructions end-to-end.
 
-**Status:** open (docs honest, integration unverified)
+**Status:** open (docs honest, partial verification only)
 
-**Source:** external review, 2026-06-25; consistency pass same day
+**Source:** external review, 2026-06-25; local verification pass, 2026-06-28
 
 ## 3. OpenCode plugin git diff may include pre-session dirty changes
 
@@ -43,3 +43,17 @@ Runtime traps and known limitations.
 **Status:** open (workaround: in-reminder disclosure)
 
 **Source:** external review, 2026-06-25
+
+## 4. Codex CLI verification is blocked by current account quota
+
+**Symptom:** `codex login --with-api-key` succeeds, but `codex exec --json "Summarize the current instructions."` fails with `Quota exceeded. Check your plan and billing details.`
+
+**Root cause:** The API-key account available in this environment has no usable quota for Codex exec runs, so the instruction-echo test cannot complete even after login succeeds.
+
+**Fix:** Use a Codex account / API key with available quota, or a separate verification path that does not depend on the hosted Codex service. A local OSS fallback exists, but here it starts pulling `gpt-oss:20b` and is not practical for quick verification.
+
+**How to verify:** Run `codex login --with-api-key` against a writable `CODEX_HOME`, then rerun `codex exec --json "Summarize the current instructions."`. If quota is available, the session should proceed past `turn.started` instead of failing immediately.
+
+**Status:** open
+
+**Source:** local verification pass, 2026-06-28

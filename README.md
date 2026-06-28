@@ -24,7 +24,7 @@ Copy the template to your agent's global instructions location:
 |------|----------|
 | OpenCode | `~/.config/opencode/AGENTS.md` |
 | Claude Code | `~/.claude/CLAUDE.md` |
-| Codex | see [implementations/codex/README.md](implementations/codex/README.md) — currently unverified |
+| Codex | see [implementations/codex/README.md](implementations/codex/README.md) — partially verified on `codex-cli 0.140.0` |
 
 ```bash
 # OpenCode
